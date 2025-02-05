@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/pagination";
 import PaginationPrevious from './ui/pagination/PaginationPrevious';
 import PaginationNext from './ui/pagination/PaginationNext';
+import { Loader2 } from 'lucide-react';
+
 type Resource = {
   id: string;
   title: string;
@@ -25,16 +27,30 @@ function classNames(...classes: string[]) {
 
 export default function ResourcesList({ resources }: ResourcesListProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const [loading, setLoading] = useState(false);
+  const itemsPerPage = 7;
 
-  // Calculate the number of pages
+  const fetchResources = async () => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchResources();
+  }, []);
+
+
   const pageCount = Math.ceil(resources.length / itemsPerPage);
-
-  // Get current resources to display
   const currentResources = resources.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">
+      Loading...<Loader2 className="animate-spin"/></div>;
+  }
 
   return (
     <>

@@ -60,6 +60,7 @@ export function ResourcesSheet({ category }: { category: string }) {
   // Initialize state with an empty array of Resource type
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetchResources, setRefetchResources] = useState(false);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -80,7 +81,7 @@ export function ResourcesSheet({ category }: { category: string }) {
     };
 
     fetchResources();
-  }, [category]);
+  }, [category, refetchResources]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -110,7 +111,7 @@ export function ResourcesSheet({ category }: { category: string }) {
           
           <SheetFooter>
             <SheetClose asChild>
-              <CreateResourceModal category={category} />
+              <CreateResourceModal category={category} setRefetchResources={setRefetchResources} />
             </SheetClose>
           </SheetFooter>
         </SheetContent>

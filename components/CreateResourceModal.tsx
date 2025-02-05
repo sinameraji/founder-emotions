@@ -10,11 +10,12 @@ type ResourceForm = {
   url: string;
 };
 
-export function CreateResourceModal({ category }: { category: string }) {
+export function CreateResourceModal({ category, setRefetchResources }: { category: string, setRefetchResources: (refetch: boolean) => void }) {
   const [formData, setFormData] = useState<ResourceForm>({ title: '', url: '' });
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,12 +57,14 @@ export function CreateResourceModal({ category }: { category: string }) {
     } else {
       console.log('Resource added:', data);
       setSuccess(true);
+      setRefetchResources(true);
+      setOpen(false);
     }
     setLoading(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add New Resource</Button>
       </DialogTrigger>
