@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
 import { ModeToggle } from '@/components/ModeToggle';
 import VibesGrid from '@/components/VibeGrid';
 import { Footer } from "@/components/Footer";
-
-// import EditProfileModal from '@/components/EditProfileModal';
+import { v4 as uuidv4, v4 } from 'uuid'; 
+import EditProfileModal from '@/components/EditProfileModal';
 
 
 export default function Home() {
@@ -23,6 +23,22 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getUser().then(async (user) => {
       setAuthenticated(user.data.user !== null)
+      let { data, error } = await supabase
+        .from('UserProfile')
+        .select('*')
+        .eq('userId', user.data.user?.id);
+          if(!error){
+            await supabase
+      .from('UserProfile')
+      .insert([{
+        id: uuidv4(),
+        displayName: user.data.user?.email?.split('@')[0] || '',
+        avatarUrl: '',
+        socialLink: '',
+        userId: user.data.user?.id 
+      }]);
+          }
+      
     })
 
   }, [])
@@ -38,7 +54,7 @@ export default function Home() {
         <>
           <ModeToggle />
           <Button variant="outline" onClick={signOut}>Log out</Button>
-          {/* <EditProfileModal /> */}
+          <EditProfileModal />
         </>
       }
     </div>
