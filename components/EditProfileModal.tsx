@@ -106,7 +106,8 @@ const EditProfileModal = () => {
         console.log('Profile updated:', data);
         if (avatarFile) {
           const fileExt = avatarFile.name.split('.').pop();
-          const fileName = `avatars/${user.data.user?.id}.${fileExt}`;
+          const timestamp = new Date().getTime();
+          const fileName = `avatars/${user.data.user?.id}-${timestamp}.${fileExt}`;
           const { error: uploadError } = await supabase.storage
             .from('avatars')
             .upload(fileName, avatarFile);
@@ -146,7 +147,7 @@ const EditProfileModal = () => {
             <Loader2 className="animate-spin" />
           </div>
         ) : (
-          <Avatar>
+          <Avatar className="cursor-pointer">
             <AvatarImage src={avatarUrl} />
             <AvatarFallback>{displayName[0] || 'U'}</AvatarFallback>
           </Avatar>
@@ -190,7 +191,7 @@ const EditProfileModal = () => {
           {isLoading ? 'Saving...' : 'Save'}
         </Button>
         <DialogClose asChild>
-          <Button variant="ghost">Cancel</Button>
+
         </DialogClose>
       </DialogContent>
     </Dialog>

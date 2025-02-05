@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Emotional Compass For The Trenches",
-  description: "The best free content for the realest startup emotions, curated by founders",
+  description: "The best free content for the realest startup emotions, curated by founders who have seen things",
 };
 
 export default function RootLayout({

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from '@/utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid'; 
+import { AuthModal } from './AuthModal';
 
 type ResourceForm = {
   title: string;
@@ -16,14 +17,17 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
   const [userId, setUserId] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(async (user) => {
+    supabase.auth.getUser().then((user) => {
       if (user.data.user) {
         setUserId(user.data.user.id);
+      } else {
+        setShowAuthModal(true);
       }
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -39,6 +43,7 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
   const handleSubmit = async () => {
     if (!userId) {
       console.error('User must be logged in to add a resource');
+      setShowAuthModal(true);
       return;
     }
 
@@ -69,19 +74,24 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Add New Resource</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogTitle>Add New Resource</DialogTitle>
-        <DialogDescription>Enter details for the new resource.</DialogDescription>
-        <Input name="title" placeholder="Title" value={formData.title} onChange={handleChange} />
-        <Input name="url" placeholder="URL" value={formData.url} onChange={handleChange} />
-        <Button onClick={handleSubmit} disabled={loading || !userId || success}>
-          {loading ? 'Adding...' : success ? 'Added :)' : 'Add Resource'}
-        </Button>
-      </DialogContent>
-    </Dialog>
+    <>
+      {showAuthModal && <AuthModal />}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button onClick={() => userId ? setOpen(true) : setShowAuthModal(true)} disabled={!userId}>
+            Add New Resource
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Add New Resource</DialogTitle>
+          <DialogDescription>Enter details for the new resource.</DialogDescription>
+          <Input name="title" placeholder="Title" value={formData.title} onChange={handleChange} />
+          <Input name="url" placeholder="URL" value={formData.url} onChange={handleChange} />
+          <Button onClick={handleSubmit} disabled={loading || !userId || success}>
+            {loading ? 'Adding...' : success ? 'Added :)' : 'Add Resource'}
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

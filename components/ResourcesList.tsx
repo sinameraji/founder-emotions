@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
-import PaginationPrevious from './ui/pagination/PaginationPrevious';
-import PaginationNext from './ui/pagination/PaginationNext';
-import { Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { createClient } from '@/utils/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2 } from 'lucide-react';
+import { Button } from './ui/button';
 
 type Resource = {
   id: string;
@@ -17,112 +11,99 @@ type Resource = {
   url: string;
   voteCount: number;
   userId: string;
-  avatarUrl?: string;
   createdAt: string;
-  socialLink?: string;
+  UserProfile?: {
+    displayName: string;
+    avatarUrl: string;
+    socialLink: string;
+  };
 }
 
 interface ResourcesListProps {
-  resources: Resource[];
+  category: string;
 }
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
+export default function ResourcesList({ category }: ResourcesListProps) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
 
-export default function ResourcesList({ resources }: ResourcesListProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const itemsPerPage = 7;
-  const supabase = createClient();
+  const fetchResources = async (page: number) => {
+    const supabase = createClient();
+    const offset = page * itemsPerPage;
+    const { data, error } = await supabase
+      .from('Resource')
+      .select(`
+        *,
+        UserProfile (
+          displayName,
+          avatarUrl,
+          socialLink
+        )
+      `)
+      .eq('category', category)
+      .range(offset, offset + itemsPerPage - 1);
 
-  useEffect(() => {
-    const fetchAvatars = async () => {
-      setLoading(true);
-      const userIds = resources.map(resource => resource.userId);
-      const { data, error } = await supabase
-        .from('UserProfile')
-        .select('userId, avatarUrl, socialLink')
-        .in('userId', userIds);
+    if (error) {
+      throw new Error('Error fetching resources');
+    }
 
-      if (error) {
-        console.error('Error fetching avatars:', error);
-      } else {
-        const avatarMap = new Map();
-        for (const item of data) {
-          if (item.avatarUrl) {
-            const { data: urlData } = await supabase
-              .storage
-              .from('avatars')
-              .getPublicUrl(item.avatarUrl);
+    // Fetch public URLs for avatars
+    const resourcesWithAvatars = await Promise.all(data.map(async (resource) => {
+      if (resource.UserProfile && resource.UserProfile.avatarUrl) {
+        const response = await supabase
+          .storage
+          .from('avatars')
+          .getPublicUrl(resource.UserProfile.avatarUrl);
 
-            avatarMap.set(item.userId, { url: urlData.publicUrl, socialLink: item.socialLink });
-          }
+        // Check if the publicUrl is undefined to handle errors
+        if (!response.data.publicUrl) {
+          console.error('Error fetching avatar URL');
+          return resource; // Return resource without avatar URL modification if there's an error
         }
-        resources.forEach(resource => {
-          const avatarInfo = avatarMap.get(resource.userId) || { url: 'default-avatar.png', socialLink: '#' };
-          resource.avatarUrl = avatarInfo.url;
-          resource.socialLink = avatarInfo.socialLink;
-        });
+
+        return {
+          ...resource,
+          UserProfile: {
+            ...resource.UserProfile,
+            avatarUrl: response.data.publicUrl
+          }
+        };
       }
-      setLoading(false);
-    };
+      return resource;
+    }));
 
-    fetchAvatars();
-  }, [resources, supabase]);
+    return resourcesWithAvatars;
+  };
 
-  // Sort resources by createdAt date
-  const sortedResources = resources.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const { data, error, isLoading, isFetching } = useQuery(['resources', category, currentPage], () => fetchResources(currentPage));
 
-  const pageCount = Math.ceil(sortedResources.length / itemsPerPage);
-  const currentResources = sortedResources.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  if (isLoading || isFetching) return <div className="flex justify-center items-center">Loading...<Loader2 className="animate-spin" /></div>;
+  if (error) return <div>Error fetching data</div>;
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">
-      Loading...<Loader2 className="animate-spin"/></div>;
-  }
+  const nextPage = () => setCurrentPage((prev) => prev + 1);
+  const prevPage = () => setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
 
   return (
     <>
-    <Pagination className="flex justify-start my-8">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            />
-          </PaginationItem>
-          {Array.from({ length: pageCount }, (_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink onClick={() => setCurrentPage(i + 1)} isActive={currentPage === i + 1}>
-                {i + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === pageCount} />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
       <ul role="list" className="divide-y">
-        {currentResources.map((resource) => (
+        {data?.map((resource: Resource & { UserProfile: { avatarUrl: string; displayName: string; socialLink?: string } }) => (
           <li key={resource.id} className="flex items-center justify-between gap-x-6 py-4">
             <a href={resource.url} target="_blank" rel="noopener noreferrer" className='underline hover:text-blue-500 flex-1'>
               <p className="text-sm font-semibold">{resource.title}</p>
             </a>
-            <a href={resource.socialLink} target="_blank" rel="noopener noreferrer">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={resource.avatarUrl} alt="Avatar" />
-                <AvatarFallback>{resource.title.charAt(0)}</AvatarFallback>
+            <a href={resource.UserProfile?.socialLink} target="_blank" rel="noopener noreferrer">
+              <Avatar>
+                <AvatarImage src={resource.UserProfile?.avatarUrl} alt={resource.UserProfile?.displayName} />
+                <AvatarFallback>{resource.UserProfile?.displayName.charAt(0)}</AvatarFallback>
               </Avatar>
             </a>
           </li>
         ))}
       </ul>
-      
+      <div className="flex justify-between mt-4">
+        <Button onClick={prevPage} disabled={currentPage === 0} variant="outline" >Previous</Button>
+        <Button onClick={nextPage} disabled={data?.length ? data.length < itemsPerPage : false} variant="outline" >Next</Button>
+      </div>
     </>
-  )
+  );
 }

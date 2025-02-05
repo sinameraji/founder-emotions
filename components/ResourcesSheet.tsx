@@ -19,6 +19,7 @@ import { AvatarCircles } from "./ui/avatar-circles"
 import { createClient } from '@/utils/supabase/client'
 import ResourcesList from './ResourcesList'
 import { CreateResourceModal } from './CreateResourceModal'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 
 const avatars = [
@@ -57,6 +58,9 @@ type Resource = {
   createdAt: string;
 }
 
+// Create a client
+const queryClient = new QueryClient();
+
 export function ResourcesSheet({ category }: { category: string }) {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,36 +96,38 @@ export function ResourcesSheet({ category }: { category: string }) {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <Sheet>
-        <SheetTrigger asChild>
-          <div className="flex flex-col mt-4 items-center sm:items-start gap-4">
-            <PulsatingButton>
-              See {resources.length} resources for {category} emotions
-            </PulsatingButton>
-            <AvatarCircles numPeople={20} avatarUrls={avatars}/>
-          </div>
-        </SheetTrigger>
-        <SheetContent side="right">
-          <SheetHeader>
-            <SheetTitle>Resources for {category} emotions</SheetTitle>
-            <SheetDescription>
+    <QueryClientProvider client={queryClient}>
+      <div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <div className="flex flex-col mt-4 items-center sm:items-start gap-4">
+              <PulsatingButton>
+                View {resources.length} resources
+              </PulsatingButton>
+              <AvatarCircles numPeople={20} avatarUrls={avatars}/>
+            </div>
+          </SheetTrigger>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle>Resources for {category} emotions</SheetTitle>
+              <SheetDescription>
 
-            </SheetDescription>
-          </SheetHeader>
-          <div className=" gap-4 px-4 h-[80%]">
+              </SheetDescription>
+            </SheetHeader>
+            <div className=" gap-4 px-4 h-[80%]">
 
-              <ResourcesList resources={resources} />
+                <ResourcesList category={category} />
 
-          </div>
-          
-          <SheetFooter>
-            <SheetClose asChild>
-              <CreateResourceModal category={category} setRefetchResources={setRefetchResources} />
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    </div>
+            </div>
+            
+            <SheetFooter>
+              <SheetClose asChild>
+                <CreateResourceModal category={category} setRefetchResources={setRefetchResources} />
+              </SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </QueryClientProvider>
   );
 }

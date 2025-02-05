@@ -19,7 +19,7 @@ export default function VibesGrid() {
           Emotional Compass For The Trenches <img src="trenches.png" alt="" className="inline  h-12 w-12"/>
         </h1>
 
-        <h2 className="text-3xl text-center mt-8"> The best free content for the realest startup vibes, curated by founders</h2>
+        <h2 className="text-2xl text-center mt-8"> The best free content for the realest startup vibes, curated by founders who have seen things</h2>
         <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
           <div className="relative lg:row-span-2">
             <div className="absolute inset-px rounded-lg  lg:rounded-l-[2rem]"></div>
