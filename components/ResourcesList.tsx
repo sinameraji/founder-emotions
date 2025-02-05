@@ -1,80 +1,75 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import React, { useState } from 'react';
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { PulsatingButton } from "./ui/pulsating-button"
-import { AvatarCircles } from "./ui/avatar-circles"
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination";
+import PaginationPrevious from './ui/pagination/PaginationPrevious';
+import PaginationNext from './ui/pagination/PaginationNext';
+type Resource = {
+  id: string;
+  title: string;
+  url: string;
+  voteCount: number;
+  userId: string;
+}
 
-const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
+interface ResourcesListProps {
+  resources: Resource[];
+}
 
-type SheetSide = (typeof SHEET_SIDES)[number]
-const avatars = [
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/16860528",
-      profileUrl: "https://github.com/dillionverma",
-    },
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/20110627",
-      profileUrl: "https://github.com/tomonarifeehan",
-    },
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/106103625",
-      profileUrl: "https://github.com/BankkRoll",
-    },
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/59228569",
-      profileUrl: "https://github.com/safethecode",
-    },
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/59442788",
-      profileUrl: "https://github.com/sanjay-mali",
-    },
-    {
-      imageUrl: "https://avatars.githubusercontent.com/u/89768406",
-      profileUrl: "https://github.com/itsarghyadas",
-    },
-  ];
-export function ResourcesList({ category }: { category: string }) {
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ')
+}
+
+export default function ResourcesList({ resources }: ResourcesListProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
+  // Calculate the number of pages
+  const pageCount = Math.ceil(resources.length / itemsPerPage);
+
+  // Get current resources to display
+  const currentResources = resources.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
-    <div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <div className="flex flex-col mt-4 items-start gap-4">
-              <PulsatingButton>
-              See 17 resources
-              </PulsatingButton>
-              <AvatarCircles numPeople={80} avatarUrls={avatars}/>
+    <>
+    <Pagination className="flex justify-start my-8">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+          </PaginationItem>
+          {Array.from({ length: pageCount }, (_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink onClick={() => setCurrentPage(i + 1)} isActive={currentPage === i + 1}>
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === pageCount} />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      <ul role="list" className="divide-y">
+        {currentResources.map((resource) => (
+          <li key={resource.id} className="flex items-center justify-between gap-x-6 py-4">
+            <div className="min-w-0">
+              <div className="flex items-start gap-x-3">
+                <a href={resource.url} target="_blank" rel="noopener noreferrer" className='underline hover:text-blue-500'><p className="text-sm/6 font-semibold ">{resource.title}</p></a>
+              </div>
             </div>
-          </SheetTrigger>
-          <SheetContent side="bottom">
-            <SheetHeader>
-              <SheetTitle>Resources</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when you're done.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="grid gap-48 py-72">
-             
-            </div>
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Save changes</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-
-    </div>
+          </li>
+        ))}
+      </ul>
+      
+    </>
   )
 }

@@ -3,19 +3,11 @@ import { useTheme } from 'next-themes';
 import { AvatarCircles } from "./ui/avatar-circles"
 import { PulsatingButton } from "./ui/pulsating-button"
 import React, { useState, useEffect } from 'react';
-import { ResourcesList } from './ResourcesList';
+import { ResourcesSheet } from './ResourcesSheet';
 
 export default function VibesGrid() {
-  const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
   const { theme } = useTheme();
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => setIsDarkMode(mediaQuery.matches);
-    mediaQuery.addListener(handleChange);
-
-    return () => mediaQuery.removeListener(handleChange);
-  }, []);
-
   const imageSrc = theme === 'dark' ? "trench-dark.png" : "trench.png";
 
   return (
@@ -37,9 +29,9 @@ export default function VibesGrid() {
                   "It's so over"
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6  max-lg:text-center">
-                  Curated content to navigate burn out, stress, impatience, uncertainty, addictive tendencies, fear and overwhelm. 
+                  Curated content to manage negative emotions (fear, burnout, impatience etc.)
                 </p>
-               <ResourcesList category="negative" />
+               <ResourcesSheet category="negative" />
               </div>
               <div className="relative min-h-[30rem] w-full grow [container-type:inline-size] max-lg:mx-auto max-lg:max-w-sm">
                 <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw]  border-gray-700 bg-gray-900 shadow-2xl">
@@ -115,8 +107,8 @@ export default function VibesGrid() {
                   "We're so back"
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6  max-lg:text-center">
-                Curated content to feel inspired, super pumped, and grateful ready to go.</p>
-                <ResourcesList category="positive" />
+                Curated content for positive emotions (inspiration, gratitude, excitement etc.)</p>
+                <ResourcesSheet category="positive" />
               </div>
               
               <div className="relative min-h-[30rem] w-full grow [container-type:inline-size] max-lg:mx-auto max-lg:max-w-sm">

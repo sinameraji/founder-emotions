@@ -8,21 +8,11 @@ import { ModeToggle } from '@/components/ModeToggle';
 import VibesGrid from '@/components/VibeGrid';
 import { Footer } from "@/components/Footer";
 
+// import EditProfileModal from '@/components/EditProfileModal';
+
 
 export default function Home() {
   const supabase = createClient()
-
-  const [email, setEmail] = useState('')
-  async function signInWithEmail() {
-
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        shouldCreateUser: true,
-      },
-    })
-  }
-
   const [authenticated, setAuthenticated] = useState(false)
 
   async function signOut() {
@@ -31,10 +21,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then((user) => {
+    supabase.auth.getUser().then(async (user) => {
       setAuthenticated(user.data.user !== null)
-      
-
     })
 
   }, [])
@@ -50,6 +38,7 @@ export default function Home() {
         <>
           <ModeToggle />
           <Button variant="outline" onClick={signOut}>Log out</Button>
+          {/* <EditProfileModal /> */}
         </>
       }
     </div>

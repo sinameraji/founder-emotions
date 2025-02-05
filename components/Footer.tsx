@@ -7,7 +7,7 @@
           <div className="flex items-center gap-x-2">
            
             <h2 className="text-base font-bold text-neutral-900 dark:text-white">
-              Created by <a href="https://learningloop.com" className="text-blue-500">LearningLoop.com</a> in 2025
+              Created by <a href="https://learningloop.com" className="text-blue-500">LearningLoop.com</a> in LL launch week 2025
             </h2>
             
           </div>       
