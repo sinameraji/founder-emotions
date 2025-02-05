@@ -86,7 +86,7 @@ export default function ResourcesList({ category, refetchResources, setRefetchRe
       refetch();
       setRefetchResources(false);
     }
-  }, [refetchResources]);
+  }, [refetchResources, refetch, setRefetchResources]);
 
   useEffect(() => {
     const fetchUserId = async () => {

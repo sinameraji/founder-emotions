@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { ModeToggle } from '@/components/ModeToggle';
 import VibesGrid from '@/components/VibeGrid';
 import { Footer } from "@/components/Footer";
-import { v4 as uuidv4, v4 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid'; 
 import EditProfileModal from '@/components/EditProfileModal';
 
 
@@ -21,7 +21,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(async (user) => {
+    const fetchUser = async () => {
+      const user = await supabase.auth.getUser();
       if (user.data.user) {
         setAuthenticated(true);
         const { data, error } = await supabase
@@ -50,8 +51,9 @@ export default function Home() {
           }
         }
       }
-    });
-  }, []);
+    };
+    fetchUser();
+  }, [supabase]);
   
   return (
    <div className="flex flex-col items-center justify-center h-full w-full relative">

@@ -1,9 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import React, { useState } from 'react';
 import {
   Sheet,
   SheetClose,
@@ -16,7 +13,6 @@ import {
 } from "@/components/ui/sheet"
 import { PulsatingButton } from "./ui/pulsating-button"
 import { AvatarCircles } from "./ui/avatar-circles"
-import { createClient } from '@/utils/supabase/client'
 import ResourcesList from './ResourcesList'
 import { CreateResourceModal } from './CreateResourceModal'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -49,14 +45,7 @@ const avatars = [
     },
   ];
 
-type Resource = {
-  id: string;
-  title: string;
-  url: string;
-  voteCount: number;
-  userId: string;
-  createdAt: string;
-}
+
 
 // Create a client
 const queryClient = new QueryClient();
@@ -65,7 +54,6 @@ export function ResourcesSheet({ category }: { category: string }) {
 
 
   const [refetchResources, setRefetchResources] = useState(false);
-  const isFetching = useRef(false);
 
  
 

@@ -1,22 +1,21 @@
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 
-import { AvatarCircles } from "./ui/avatar-circles"
-import { PulsatingButton } from "./ui/pulsating-button"
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ResourcesSheet } from './ResourcesSheet';
 
 export default function VibesGrid() {
 
   const { theme } = useTheme();
-  const imageSrc = theme === 'dark' ? "trench-dark.png" : "trench.png";
+  const imageSrc = theme === 'dark' ? "/trench-dark.png" : "/trench.png";
 
   return (
     <div className=" py-12 sm:py-12">
       <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-        <img src={imageSrc} alt="Trench Image" className="mx-auto w-full sm:w-[40%] h-auto" />
+        <Image src={imageSrc} alt="Trench Image" className="mx-auto w-full sm:w-[40%] h-auto" width={500} height={500} />
 
         <h1 className="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight sm:text-5xl">
-          Emotional Compass For The Trenches <img src="trenches.png" alt="" className="inline  h-12 w-12"/>
+          Emotional Compass For The Trenches <Image src="/trenches.png" alt="Trenches" className="inline  h-12 w-12" width={48} height={48}/>
         </h1>
 
         <h2 className="text-2xl text-center mt-8"> The best free content for the realest startup vibes, curated by founders who have seen things</h2>
@@ -26,7 +25,7 @@ export default function VibesGrid() {
             <div className="relative flex h-full flex-col overflow-hidden  rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">
               <div className="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
                 <p className="mt-2 text-2xl font-bold tracking-tight italic   max-lg:text-center">
-                  "It's so over"
+                  &quot;It&apos;s so over&quot;
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6  max-lg:text-center">
                   Curated content to manage negative emotions (fear, burnout, impatience etc.)
@@ -35,10 +34,12 @@ export default function VibesGrid() {
               </div>
               <div className="relative min-h-[30rem] w-full grow [container-type:inline-size] max-lg:mx-auto max-lg:max-w-sm">
                 <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw]  border-gray-700 bg-gray-900 shadow-2xl">
-                  <img
+                  <Image
                     className="size-full object-cover object-top"
                     src="https://cdn.midjourney.com/a3023d06-5aa4-4045-ad82-9cc2663e1634/0_1.png"
                     alt=""
+                    width={500}
+                    height={500}
                   />
                 </div>
               </div>
@@ -104,7 +105,7 @@ export default function VibesGrid() {
             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]">
               <div className="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
                 <p className="mt-2 text-2xl font-bold tracking-tight italic  max-lg:text-center">
-                  "We're so back"
+                  &quot;We&apos;re so back&quot;
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6  max-lg:text-center">
                 Curated content for positive emotions (inspiration, gratitude, excitement etc.)</p>
@@ -113,10 +114,12 @@ export default function VibesGrid() {
               
               <div className="relative min-h-[30rem] w-full grow [container-type:inline-size] max-lg:mx-auto max-lg:max-w-sm">
                 <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw]  border-gray-700 bg-gray-900 shadow-2xl">
-                  <img
+                  <Image
                     className="size-full object-cover object-top"
                     src="https://cdn.midjourney.com/9a148588-1d50-40ff-9d89-8cc1059074c8/0_3.png"
                     alt=""
+                    width={500}
+                    height={500}
                   />
                 </div>
               </div>

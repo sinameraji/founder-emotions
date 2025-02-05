@@ -13,7 +13,6 @@ import { createClient } from '@/utils/supabase/client';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -46,7 +45,7 @@ export function AuthModal() {
 
     async function signInWithEmail(email: string) {
         setLoading(true);
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const {  error } = await supabase.auth.signInWithOtp({
           email: email,
           options: {
             shouldCreateUser: true,
@@ -71,7 +70,7 @@ export function AuthModal() {
         <DialogHeader>
           <DialogTitle>Sign in to contribute</DialogTitle>
           <DialogDescription>
-          Hey there! 👋 You need to sign in to add a new emotion. Don't worry, it's quick and easy!
+            Hey there! &apos;👋 You need to sign in to add a new emotion. Don&apos;t worry, it&apos;s quick and easy!
           </DialogDescription>
         </DialogHeader>
 
@@ -99,7 +98,7 @@ export function AuthModal() {
     </Form>
 
         <DialogFooter>
-        <p className="text-sm text-gray-500">We'll send you a magic link to sign in. No password needed! It's like magic, but real. 🎩✨</p>
+        <p className="text-sm text-gray-500">We&apos;ll send you a magic link to sign in. No password needed! It&apos;s like magic, but real. 🎩✨</p>
         </DialogFooter>
       </DialogContent>
     </Dialog>
