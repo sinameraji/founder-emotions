@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { createClient } from '@/utils/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 
 type Resource = {
@@ -21,11 +21,14 @@ type Resource = {
 
 interface ResourcesListProps {
   category: string;
+  refetchResources: boolean;
+  setRefetchResources: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ResourcesList({ category }: ResourcesListProps) {
+export default function ResourcesList({ category, refetchResources, setRefetchResources }: ResourcesListProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const fetchResources = async (page: number) => {
     const supabase = createClient();
@@ -41,6 +44,7 @@ export default function ResourcesList({ category }: ResourcesListProps) {
         )
       `)
       .eq('category', category)
+      .order('createdAt', { ascending: false })
       .range(offset, offset + itemsPerPage - 1);
 
     if (error) {
@@ -75,7 +79,41 @@ export default function ResourcesList({ category }: ResourcesListProps) {
     return resourcesWithAvatars;
   };
 
-  const { data, error, isLoading, isFetching } = useQuery(['resources', category, currentPage], () => fetchResources(currentPage));
+  const { data, error, isLoading, isFetching, refetch } = useQuery(['resources', category, currentPage], () => fetchResources(currentPage));
+
+  useEffect(() => {
+    if (refetchResources) {
+      refetch();
+      setRefetchResources(false);
+    }
+  }, [refetchResources]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const supabase = createClient();
+      const user = await supabase.auth.getUser();
+      if (user.data.user) {
+        setCurrentUserId(user.data.user.id);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  const handleDelete = async (resourceId: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('Resource')
+      .delete()
+      .match({ id: resourceId });
+
+    if (error) {
+      console.error('Error deleting resource:', error);
+    } else {
+      setRefetchResources(true);
+      console.log('Resource deleted successfully');
+    }
+  };
 
   if (isLoading || isFetching) return <div className="flex justify-center items-center">Loading...<Loader2 className="animate-spin" /></div>;
   if (error) return <div>Error fetching data</div>;
@@ -83,6 +121,7 @@ export default function ResourcesList({ category }: ResourcesListProps) {
   const nextPage = () => setCurrentPage((prev) => prev + 1);
   const prevPage = () => setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
 
+  
   return (
     <>
       <ul role="list" className="divide-y">
@@ -97,6 +136,11 @@ export default function ResourcesList({ category }: ResourcesListProps) {
                 <AvatarFallback>{resource.UserProfile?.displayName.charAt(0)}</AvatarFallback>
               </Avatar>
             </a>
+            {currentUserId === resource.userId && (
+              <button onClick={() => handleDelete(resource.id)} title="Delete Resource">
+                <Trash2 className="text-red-500 hover:text-red-700 h-4 w-4" />
+              </button>
+            )}
           </li>
         ))}
       </ul>

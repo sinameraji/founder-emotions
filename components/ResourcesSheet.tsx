@@ -62,38 +62,14 @@ type Resource = {
 const queryClient = new QueryClient();
 
 export function ResourcesSheet({ category }: { category: string }) {
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [loading, setLoading] = useState(true);
+
+
   const [refetchResources, setRefetchResources] = useState(false);
   const isFetching = useRef(false);
 
-  useEffect(() => {
-    if (!isFetching.current) {
-      isFetching.current = true;
-      const fetchResources = async () => {
-        const supabase = createClient();
-        let { data, error } = await supabase
-          .from('Resource')
-          .select('*')
-          .eq('category', category);
+ 
 
-        if (error) {
-          console.error('Error fetching resources:', error);
-          setResources([]);
-        } else {
-          setResources(data || []);
-        }
 
-        setLoading(false);
-        isFetching.current = false;
-      };
-
-      fetchResources();
-      setRefetchResources(false);
-    }
-  }, [category, refetchResources]);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -102,7 +78,7 @@ export function ResourcesSheet({ category }: { category: string }) {
           <SheetTrigger asChild>
             <div className="flex flex-col mt-4 items-center sm:items-start gap-4">
               <PulsatingButton>
-                View {resources.length} resources
+                View resources
               </PulsatingButton>
               <AvatarCircles numPeople={20} avatarUrls={avatars}/>
             </div>
@@ -116,7 +92,7 @@ export function ResourcesSheet({ category }: { category: string }) {
             </SheetHeader>
             <div className=" gap-4 px-4 h-[80%]">
 
-                <ResourcesList category={category} />
+                <ResourcesList category={category} refetchResources={refetchResources} setRefetchResources={setRefetchResources} />
 
             </div>
             
