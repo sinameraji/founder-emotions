@@ -24,9 +24,13 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
         setUserId(user.data.user.id);
       }
     })
-
-    
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      setSuccess(false);
+    }
+  }, [open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,7 +53,7 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
         url: formData.url,
         category: category,
         voteCount: 0, 
-        userId: userId 
+        userId: userId
       }]);
     if (error) {
       console.error('Error inserting resource:', error);
@@ -59,6 +63,7 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
       setSuccess(true);
       setRefetchResources(true);
       setOpen(false);
+      setFormData({ title: '', url: '' });
     }
     setLoading(false);
   };

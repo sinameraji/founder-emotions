@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -54,33 +54,39 @@ type Resource = {
   url: string;
   voteCount: number;
   userId: string;
+  createdAt: string;
 }
 
 export function ResourcesSheet({ category }: { category: string }) {
-  // Initialize state with an empty array of Resource type
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [refetchResources, setRefetchResources] = useState(false);
+  const isFetching = useRef(false);
 
   useEffect(() => {
-    const fetchResources = async () => {
-      const supabase = createClient();
-      let { data, error } = await supabase
-        .from('Resource')
-        .select('*')
-        .eq('category', category);
+    if (!isFetching.current) {
+      isFetching.current = true;
+      const fetchResources = async () => {
+        const supabase = createClient();
+        let { data, error } = await supabase
+          .from('Resource')
+          .select('*')
+          .eq('category', category);
 
-      if (error) {
-        console.error('Error fetching resources:', error);
-        setResources([]); // Ensure to set to empty array on error
-      } else {
-        setResources(data || []); // Ensure data is not null, fallback to empty array
-      }
+        if (error) {
+          console.error('Error fetching resources:', error);
+          setResources([]);
+        } else {
+          setResources(data || []);
+        }
 
-      setLoading(false);
-    };
+        setLoading(false);
+        isFetching.current = false;
+      };
 
-    fetchResources();
+      fetchResources();
+      setRefetchResources(false);
+    }
   }, [category, refetchResources]);
 
   if (loading) return <div>Loading...</div>;
