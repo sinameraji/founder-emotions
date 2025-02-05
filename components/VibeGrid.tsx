@@ -36,7 +36,7 @@ export default function VibesGrid() {
                 <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw]  border-gray-700 bg-gray-900 shadow-2xl">
                   <Image
                     className="size-full object-cover object-top"
-                    src="https://cdn.midjourney.com/a3023d06-5aa4-4045-ad82-9cc2663e1634/0_1.png"
+                    src="/wrecked.png"
                     alt=""
                     width={500}
                     height={500}
@@ -116,7 +116,7 @@ export default function VibesGrid() {
                 <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw]  border-gray-700 bg-gray-900 shadow-2xl">
                   <Image
                     className="size-full object-cover object-top"
-                    src="https://cdn.midjourney.com/9a148588-1d50-40ff-9d89-8cc1059074c8/0_3.png"
+                    src="/happy.png"
                     alt=""
                     width={500}
                     height={500}
