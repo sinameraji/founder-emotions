@@ -22,26 +22,36 @@ export default function Home() {
 
   useEffect(() => {
     supabase.auth.getUser().then(async (user) => {
-      setAuthenticated(user.data.user !== null)
-      let { data, error } = await supabase
-        .from('UserProfile')
-        .select('*')
-        .eq('userId', user.data.user?.id);
-          if(!error){
-            await supabase
-      .from('UserProfile')
-      .insert([{
-        id: uuidv4(),
-        displayName: user.data.user?.email?.split('@')[0] || '',
-        avatarUrl: '',
-        socialLink: '',
-        userId: user.data.user?.id 
-      }]);
-          }
-      
-    })
+      if (user.data.user) {
+        setAuthenticated(true);
+        const { data, error } = await supabase
+          .from('UserProfile')
+          .select('*')
+          .eq('userId', user.data.user.id)
+          .single();
 
-  }, [])
+        if (error && error.message !== 'No rows found') {
+          console.error('Error fetching user profile:', error);
+        } else if (data) {
+
+        } else {
+          // No profile exists, insert new
+          const { error: insertError } = await supabase
+            .from('UserProfile')
+            .insert([{
+              id: uuidv4(),
+              displayName: user.data.user.email?.split('@')[0] || '',
+              avatarUrl: '',
+              socialLink: '',
+              userId: user.data.user.id
+            }]);
+          if (insertError) {
+            console.error('Error inserting new user profile:', insertError);
+          }
+        }
+      }
+    });
+  }, []);
   
   return (
    <div className="flex flex-col items-center justify-center h-full w-full relative">
