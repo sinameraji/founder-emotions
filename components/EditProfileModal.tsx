@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useDropzone } from 'react-dropzone';
+import { Loader2 } from 'lucide-react';
 
 const EditProfileModal = () => {
   const [displayName, setDisplayName] = useState('');
@@ -14,7 +15,8 @@ const EditProfileModal = () => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isAvatarLoading, setIsAvatarLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -67,6 +69,23 @@ const EditProfileModal = () => {
     }
   });
 
+  const fetchAvatarUrl = async (avatarKey: string) => {
+    setIsAvatarLoading(true);
+    setTimeout(async () => {
+      const response = await supabase
+        .storage
+        .from('avatars')
+        .getPublicUrl(avatarKey);
+
+      if (response.data) {
+        setAvatarUrl(response.data.publicUrl);
+      } else {
+        console.error('Error fetching avatar URL');
+      }
+      setIsAvatarLoading(false);
+    }, 1000);
+  };
+
   const updateProfile = async () => {
     setIsLoading(true);
     const user = await supabase.auth.getUser();
@@ -107,6 +126,7 @@ const EditProfileModal = () => {
             } else {
               console.log('Profile updated:', data);
               setIsLoading(false);
+              fetchAvatarUrl(fileName);
               setDialogOpen(false);
             }
           }
@@ -121,10 +141,16 @@ const EditProfileModal = () => {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Avatar>
-          <AvatarImage src={avatarUrl} />
-          <AvatarFallback>{displayName[0] || 'U'}</AvatarFallback>
-        </Avatar>
+        {isAvatarLoading ? (
+          <div className="flex items-center justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          <Avatar>
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback>{displayName[0] || 'U'}</AvatarFallback>
+          </Avatar>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
