@@ -6,6 +6,8 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react'
 import { ModeToggle } from '@/components/ModeToggle';
 import VibesGrid from '@/components/VibeGrid';
+import { Footer } from "@/components/Footer";
+
 
 export default function Home() {
   const supabase = createClient()
@@ -52,8 +54,8 @@ export default function Home() {
       }
     </div>
     <VibesGrid />
-    
     <CallToAction />
+    <Footer />
    </div>
   );
 }
