@@ -139,7 +139,7 @@ export function CallToAction() {
                 Lonely in your startup journey?
               </h1>
               <p className="mt-2">
-                We reimagined the founder community experience.
+                We reimagined the founder community experience for ourselves and you.
               </p>
               <a
                 href="https://learningloop.com"

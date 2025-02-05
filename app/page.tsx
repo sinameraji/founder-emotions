@@ -1,10 +1,11 @@
 'use client'
-
-
+import { Button } from "@/components/ui/button"
 import { AuthModal } from '@/components/AuthModal';
 import { CallToAction } from '@/components/CTA';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react'
+import { ModeToggle } from '@/components/ModeToggle';
+import VibesGrid from '@/components/VibeGrid';
 
 export default function Home() {
   const supabase = createClient()
@@ -30,21 +31,28 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getUser().then((user) => {
       setAuthenticated(user.data.user !== null)
-      console.log(user)
+      
 
     })
 
   }, [])
   
- 
   return (
-   <div className="flex flex-col items-center justify-center h-screen">
-    <p>{email}</p>
-    {!authenticated ? 
-    <AuthModal />
-     :
-      <button className="bg-blue-500 text-white rounded-md p-2" onClick={signOut}>Log out</button>
-    }
+   <div className="flex flex-col items-center justify-center h-full w-full relative">
+    <div className="absolute top-4 right-4 flex items-center gap-1">
+      {!authenticated ? 
+        <>
+          <ModeToggle />
+          <AuthModal />
+        </> : 
+        <>
+          <ModeToggle />
+          <Button variant="outline" onClick={signOut}>Log out</Button>
+        </>
+      }
+    </div>
+    <VibesGrid />
+    
     <CallToAction />
    </div>
   );

@@ -41,25 +41,32 @@ export function AuthModal() {
         },
       })
 
+    const supabase = createClient()
+    const [loading, setLoading] = useState(false);
+    const [sent, setSent] = useState(false);
 
-      const supabase = createClient()
-      async function signInWithEmail(email: string) {
-
+    async function signInWithEmail(email: string) {
+        setLoading(true);
         const { data, error } = await supabase.auth.signInWithOtp({
           email: email,
           options: {
             shouldCreateUser: true,
           },
         })
-      }
-      function onSubmit(values: z.infer<typeof formSchema>) {
-        
-          signInWithEmail(values.email)
-      }
+        setLoading(false);
+        if (!error) {
+            setSent(true);
+        }
+    }
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        signInWithEmail(values.email)
+    }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Sign in</Button>
+        <Button variant="outline" >Sign in</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -86,7 +93,9 @@ export function AuthModal() {
             </FormItem>
           )}
         />
-        <Button type="submit">Send Magic Link ✨</Button>
+        <Button type="submit" disabled={loading || sent}>
+          {loading ? "Sending..." : sent ? "Sent :) Please check your email" : "Send Magic Link ✨"}
+        </Button>
       </form>
     </Form>
 
