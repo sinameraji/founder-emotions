@@ -26,7 +26,7 @@ export function Footer() {
         <div className="flex items-center gap-x-2">
          <a href="https://learningloop.com" target="_blank">
           <Image
-            className="h-12 "
+            className="h-12 w-auto"
             src="/learningloop-logo.png"
             alt="learningloop-logo"
             width={500}
