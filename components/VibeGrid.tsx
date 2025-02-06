@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ResourcesSheet } from './ResourcesSheet';
 
 export default function VibesGrid() {
-  const { theme, systemTheme, setTheme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const effectiveTheme = theme === 'system' ? systemTheme : theme;
   const [imageSrc, setImageSrc] = useState(effectiveTheme === 'dark' ? "/trench-dark.png" : "/trench.png");
 

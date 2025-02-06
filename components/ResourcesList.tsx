@@ -2,23 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { createClient } from '@/utils/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, MoreVertical, Trash2, Edit2 } from 'lucide-react';
+import { Loader2, MoreVertical } from 'lucide-react';
 import { Button } from './ui/button';
 import { EditResourceModal } from './EditResourceModal';
 
-type Resource = {
-  id: string;
-  title: string;
-  url: string;
-  voteCount: number;
-  userId: string;
-  createdAt: string;
-  UserProfile?: {
-    displayName: string;
-    avatarUrl: string;
-    socialLink: string;
-  };
-}
+
 
 interface ResourcesListProps {
   category: string;

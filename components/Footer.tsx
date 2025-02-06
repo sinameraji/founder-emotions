@@ -1,10 +1,7 @@
-import {
-    InstagramLogoIcon,
-    LinkedInLogoIcon,
-    TwitterLogoIcon,
-  } from "@radix-ui/react-icons";
-import { JSX, useState } from "react";
+
+import {  useState } from "react";
 import { ShareDialog } from "./ShareDialog";
+import Image from 'next/image';
 
 type Link = {
   text: string;
@@ -16,16 +13,6 @@ const links: Link[] = [
   { text: "Blog", url: "https://blog.learningloop.com" },
 ];
 
-interface Icon {
-  icon: JSX.Element;
-  url: string;
-}
-
-const icons: Icon[] = [
-  { icon: <InstagramLogoIcon />, url: "https://www.instagram.com" },
-  { icon: <LinkedInLogoIcon />, url: "https://www.linkedin.com" },
-  { icon: <TwitterLogoIcon />, url: "https://www.twitter.com" },
-];
 
 export function Footer() {
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -38,10 +25,12 @@ export function Footer() {
       <div className="flex flex-col gap-y-5 md:flex-row items-start md:items-center justify-between w-full gap-x-5">
         <div className="flex items-center gap-x-2">
          <a href="https://learningloop.com" target="_blank">
-          <img
+          <Image
             className="h-12 "
             src="/learningloop-logo.png"
             alt="learningloop-logo"
+            width={500}
+            height={500}
           />
           </a>
            

@@ -3,7 +3,6 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, D
 import { Button } from "@/components/ui/button";
 import { FaTwitter, FaLinkedinIn, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
 import { ScriptCopyBtn } from './script-copy-btn';
-import Coffee from './Coffee';
 
 type ShareDialogProps = {
   open: boolean;
@@ -17,7 +16,7 @@ const customCommandMap = {
     bun: "https://trenches.learningloop.com",
   };
 
-export const ShareDialog: React.FC<ShareDialogProps> = ({ open, onOpenChange, onClose }) => {
+export const ShareDialog: React.FC<ShareDialogProps> = ({ open, onOpenChange, onClose }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
   const shareOptions = [
     { name: 'Twitter', url: 'https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20app! https://trenches.learningloop.com', icon: <FaTwitter /> },
     { name: 'LinkedIn', url: 'https://www.linkedin.com/shareArticle?mini=true&url=https://trenches.learningloop.com', icon: <FaLinkedinIn /> },
