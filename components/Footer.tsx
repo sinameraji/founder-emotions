@@ -1,30 +1,65 @@
-import { useState } from "react";
+import {
+    InstagramLogoIcon,
+    LinkedInLogoIcon,
+    TwitterLogoIcon,
+  } from "@radix-ui/react-icons";
+import { JSX, useState } from "react";
 import { ShareDialog } from "./ShareDialog";
 
-  
+type Link = {
+  text: string;
+  url: string;
+};
+
+const links: Link[] = [
+  { text: "Contact us", url: "mailto:team@learningloop.com" },
+  { text: "Blog", url: "https://blog.learningloop.com" },
+];
+
+interface Icon {
+  icon: JSX.Element;
+  url: string;
+}
+
+const icons: Icon[] = [
+  { icon: <InstagramLogoIcon />, url: "https://www.instagram.com" },
+  { icon: <LinkedInLogoIcon />, url: "https://www.linkedin.com" },
+  { icon: <TwitterLogoIcon />, url: "https://www.twitter.com" },
+];
+
 export function Footer() {
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const handleCloseShareDialog = () => {
       setShareDialogOpen(false);
     };
 
   return (
-    <footer className="p-5 px-5 lg:px-10 flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-x-5">
+    <footer className="px-5 lg:px-10 p-5 max-w-7xl mx-auto ">
+      <div className="flex flex-col gap-y-5 md:flex-row items-start md:items-center justify-between w-full gap-x-5">
         <div className="flex items-center gap-x-2">
-         
-          <h2 className="text-base font-bold text-neutral-900 dark:text-white">
-            Created by <a href="https://learningloop.com" className="text-blue-500">LearningLoop.com</a> in LL launch week 2025
-          </h2>
-          
-        </div>       
+         <a href="https://learningloop.com" target="_blank">
+          <img
+            className="h-12 "
+            src="/learningloop-logo.png"
+            alt="learningloop-logo"
+          />
+          </a>
+           
+            
+        </div>
+        <ShareDialog open={shareDialogOpen} onOpenChange={setShareDialogOpen} onClose={handleCloseShareDialog} />
+        <ul className="flex items-center justify-center gap-x-5">
+          {links.map((link, index) => (
+            <li
+              key={index}
+              className="text-[15px]/normal font-medium text-neutral-400 transition-all duration-100 ease-linear hover:text-neutral-900 hover:underline hover:underline-offset-4 dark:font-medium dark:text-neutral-400 hover:dark:text-neutral-100"
+            >
+              <a href={link.url} target="_blank">{link.text}</a>
+            </li>
+          ))}
+        </ul>
+        
       </div>
-
-      <div className="flex justify-center w-full">
-        <a href="mailto:team@learningloop.com" className="text-blue-500">Contact us</a>
-      </div>
-      <ShareDialog open={shareDialogOpen} onOpenChange={setShareDialogOpen} onClose={handleCloseShareDialog} />
     </footer>
   );
 }
-  

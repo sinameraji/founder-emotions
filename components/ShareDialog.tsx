@@ -28,7 +28,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ open, onOpenChange, on
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>Spread the word</Button>
+        <Button variant="outline">Share the love 🫰</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -56,6 +56,7 @@ export default function Home() {
   }, [supabase]);
   
   return (
+    <>
    <div className="flex flex-col items-center justify-center h-full w-full relative">
     <div className="absolute top-4 right-4 flex items-center gap-1">
       {!authenticated ? 
@@ -72,7 +73,8 @@ export default function Home() {
     </div>
     <VibesGrid />
     <CallToAction />
-    <Footer />
    </div>
+    <Footer />
+   </>
   );
 }
