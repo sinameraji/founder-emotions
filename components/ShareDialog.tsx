@@ -3,6 +3,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, D
 import { Button } from "@/components/ui/button";
 import { FaTwitter, FaLinkedinIn, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
 import { ScriptCopyBtn } from './script-copy-btn';
+import Coffee from './Coffee';
 
 type ShareDialogProps = {
   open: boolean;
@@ -41,6 +42,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ open, onOpenChange, on
       darkTheme="vitesse-dark"
       commandMap={customCommandMap}
     />
+
         </DialogHeader>
         <div className="flex my-8 justify-center space-x-4">
           {shareOptions.map(option => (

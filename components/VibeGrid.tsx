@@ -1,13 +1,16 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ResourcesSheet } from './ResourcesSheet';
 
 export default function VibesGrid() {
+  const { theme, systemTheme, setTheme } = useTheme();
+  const effectiveTheme = theme === 'system' ? systemTheme : theme;
+  const [imageSrc, setImageSrc] = useState(effectiveTheme === 'dark' ? "/trench-dark.png" : "/trench.png");
 
-  const { theme } = useTheme();
-  const imageSrc = theme === 'dark' ? "/trench-dark.png" : "/trench.png";
+  useEffect(() => {
+    setImageSrc(effectiveTheme === 'dark' ? "/trench-dark.png" : "/trench.png");
+  }, [effectiveTheme]);
 
   return (
     <div className=" py-12 sm:py-12">
