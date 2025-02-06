@@ -11,7 +11,7 @@ type ResourceForm = {
   url: string;
 };
 
-export function CreateResourceModal({ category, setRefetchResources }: { category: string, setRefetchResources: (refetch: boolean) => void }) {
+export function CreateResourceModal({ category, setRefetchResources, onResourceCreated }: { category: string, setRefetchResources: (refetch: boolean) => void, onResourceCreated: () => void }) {
   const [formData, setFormData] = useState<ResourceForm>({ title: '', url: '' });
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -69,6 +69,7 @@ export function CreateResourceModal({ category, setRefetchResources }: { categor
       setRefetchResources(true);
       setOpen(false);
       setFormData({ title: '', url: '' });
+      onResourceCreated();
     }
     setLoading(false);
   };

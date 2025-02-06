@@ -16,6 +16,7 @@ import { AvatarCircles } from "./ui/avatar-circles"
 import ResourcesList from './ResourcesList'
 import { CreateResourceModal } from './CreateResourceModal'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ShareDialog } from './ShareDialog'
 
 
 const avatars = [
@@ -51,13 +52,16 @@ const avatars = [
 const queryClient = new QueryClient();
 
 export function ResourcesSheet({ category }: { category: string }) {
-
-
   const [refetchResources, setRefetchResources] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
- 
+  const handleResourceCreated = () => {
+    setShareDialogOpen(true);
+  };
 
-
+  const handleCloseShareDialog = () => {
+    setShareDialogOpen(false);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -86,11 +90,18 @@ export function ResourcesSheet({ category }: { category: string }) {
             
             <SheetFooter>
               <SheetClose asChild>
-                <CreateResourceModal category={category} setRefetchResources={setRefetchResources} />
+                <CreateResourceModal category={category} setRefetchResources={setRefetchResources} onResourceCreated={handleResourceCreated} />
               </SheetClose>
             </SheetFooter>
           </SheetContent>
         </Sheet>
+        {shareDialogOpen && (
+          <ShareDialog
+            open={shareDialogOpen}
+            onOpenChange={setShareDialogOpen}
+            onClose={handleCloseShareDialog}
+          />
+        )}
       </div>
     </QueryClientProvider>
   );
