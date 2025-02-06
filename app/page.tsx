@@ -29,12 +29,12 @@ export default function Home() {
           .from('UserProfile')
           .select('*')
           .eq('userId', user.data.user.id)
-          .single();
+          .maybeSingle();
 
-        if (error && error.message !== 'No rows found') {
+        if (error) {
           console.error('Error fetching user profile:', error);
         } else if (data) {
-
+          console.log('User profile found:', data);
         } else {
           // No profile exists, insert new
           const { error: insertError } = await supabase
@@ -48,6 +48,8 @@ export default function Home() {
             }]);
           if (insertError) {
             console.error('Error inserting new user profile:', insertError);
+          } else {
+            console.log('New user profile created.');
           }
         }
       }
