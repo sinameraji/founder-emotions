@@ -10,7 +10,7 @@ type Link = {
 
 const links: Link[] = [
   { text: "Contact us", url: "mailto:team@learningloop.com" },
-  { text: "Blog", url: "https://blog.learningloop.com" },
+  { text: "Blog", url: "https://learningloop.com/blog" },
 ];
 
 
